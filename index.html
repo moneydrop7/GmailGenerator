@@ -1,0 +1,200 @@
+<style>
+    .form {
+   max-width: 400px;
+   margin: 0 auto;
+   padding: 20px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+ }
+ 
+ .form label {
+   display: block;
+   margin-bottom: 10px;
+   font-weight: bold;
+ }
+ 
+ .form input {
+   display: block;
+   width: 100%;
+   padding: 10px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   font-size: 16px;
+   margin-bottom: 20px;
+ }
+ 
+ .form .checkboxes {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 70px;
+   text-align: center;
+ }
+ 
+ .form button {
+   display: block;
+   margin: 20px auto;
+   background-color: #007bff;
+   color: #fff;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 5px;
+   font-size: 16px;
+   cursor: pointer;
+ }
+ 
+ .form button:hover {
+   background-color: #0062cc;
+ }
+ 
+ .form #results {
+   margin-top: 20px;
+ }
+ 
+ .form ul {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+ }
+ 
+ .form li {
+   margin-bottom: 10px;
+ }
+ 
+.form span {
+   display: block;
+   padding: 10px;
+   background-color: #f7f7f7;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   color: #333;
+   text-decoration: none;
+ }
+ 
+ span:hover {
+   background-color: #efefef;
+ }
+ 
+ 
+   </style>
+
+<div class="form">
+    <label for="email">Enter your Gmail address:</label>
+    <input type="email" id="email" name="email" required>
+    
+    <p>Select the tricks you want to apply:</p>
+    <div class="checkboxes">
+      <label>
+        <input type="checkbox" name="dot-trick" id="dot-trick">
+        Dot trick
+      </label>
+      <label>
+        <input type="checkbox" name="plus-trick" id="plus-trick">
+        Plus trick
+      </label>
+    </div>
+    
+    <button type="button" onclick="generateGmails()">Generate</button>
+    
+    <div id="results"></div>
+  </div>
+
+
+
+  <script>
+
+function generateGmails() {
+  const email = document.getElementById('email').value;
+  const dotTrick = document.getElementById('dot-trick').checked;
+  const plusTrick = document.getElementById('plus-trick').checked;
+  const results = document.getElementById('results');
+
+  // clear previous results
+  results.innerHTML = '';
+
+  if (!email || (!dotTrick && !plusTrick)) {
+    return;
+  }
+
+  let gmails = [email];
+
+  if (dotTrick) {
+    gmails = applyDotTrick(gmails);
+  }
+
+  if (plusTrick) {
+    gmails = applyPlusTrick(gmails);
+  }
+
+  displayResults(gmails, results);
+}
+
+function applyDotTrick(gmails) {
+  const newGmails = [];
+
+  for (let i = 0; i < gmails.length; i++) {
+    const parts = gmails[i].split('@');
+    const username = parts[0];
+    const domain = parts[1];
+
+    for (let j = 1; j < username.length; j++) {
+      newGmails.push(`${username.slice(0, j)}.${username.slice(j)}@${domain}`);
+    }
+  }
+
+  return newGmails;
+}
+
+
+function applyPlusTrick(gmails) {
+  const newGmails = [];
+
+  for (let i = 0; i < gmails.length; i++) {
+    const parts = gmails[i].split('@');
+    const username = parts[0];
+    const domain = parts[1];
+
+    for (let j = 1; j <= 100; j++) {
+      newGmails.push(`${username}+${generateRandomWord()}@${domain}`);
+    }
+  }
+
+  return newGmails;
+}
+
+function generateRandomWord() {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  let word = '';
+
+  for (let i = 0; i < 10; i++) {
+    word += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+
+  return word;
+}
+
+function displayResults(gmails, results) {
+  const ul = document.createElement('ul');
+
+  for (let i = 0; i < gmails.length; i++) {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    span.textContent = gmails[i];
+    li.appendChild(span);
+
+    // create a button element to copy the email
+    const button = document.createElement('button');
+    button.textContent = 'Copy';
+    button.onclick = () => {
+      navigator.clipboard.writeText(gmails[i]);
+    };
+    li.appendChild(button);
+
+    ul.appendChild(li);
+  }
+
+  results.appendChild(ul);
+}
+
+
+
+  </script>
